@@ -4,6 +4,7 @@ export const site = {
   description:
     "作業日報テンプレート、例文、月次フォーマット、チェックリストをブラウザ内で作成できる無料ツール集です。",
   cta: "無料テンプレートで始めて、チーム共有は日報ログへ。",
+  waitlistFormUrl: "",
   logoPath: "/logo.png",
   faviconPath: "/favicon.png",
   themeColor: "#0f4a3a"

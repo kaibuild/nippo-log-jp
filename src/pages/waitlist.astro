@@ -1,6 +1,9 @@
 ---
 import Layout from "../components/Layout.astro";
 import { site } from "../config/site";
+
+const tallyReady = Boolean(site.waitlistFormUrl);
+const tallyHref = tallyReady ? site.waitlistFormUrl : "#tally-pending";
 ---
 
 <Layout
@@ -23,20 +26,27 @@ import { site } from "../config/site";
       <h2>受付予定の項目</h2>
       <ul class="check-list">
         <li>メールアドレス</li>
+        <li>職種・立場</li>
+        <li>会社・チーム規模</li>
         <li>業種</li>
         <li>チーム人数</li>
         <li>現在の管理方法</li>
+        <li>困っていること</li>
       </ul>
       <p>
         興味がある用途として、日報共有、提出状況確認、承認、月次集計、写真付き記録を選べるフォームを準備予定です。
       </p>
     </div>
-    <div class="waitlist-panel accent-panel">
-      <h2>フォーム準備中</h2>
+    <div id="tally-pending" class="waitlist-panel accent-panel">
+      <h2>{tallyReady ? "先行案内フォーム" : "フォーム準備中"}</h2>
       <p>
-        Tally共有リンクはまだ設定されていないため、現在は仮CTAとして掲載しています。公開後はこのページから先行案内に登録できます。
+        {tallyReady
+          ? "Tallyフォームから先行案内に登録できます。送信前にTally側の表示内容も確認してください。"
+          : "Tally共有リンクはまだ設定されていないため、現在は仮CTAとして掲載しています。公開後はこのページから先行案内に登録できます。"}
       </p>
-      <a class="button button-primary" href="/tools/work-daily-report-template">無料テンプレートを使う</a>
+      <a class="button button-primary" href={tallyHref} target={tallyReady ? "_blank" : undefined} rel={tallyReady ? "noopener noreferrer" : undefined}>
+        {tallyReady ? "Tallyフォームを開く" : "無料テンプレートを使う"}
+      </a>
     </div>
   </section>
 

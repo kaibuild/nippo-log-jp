@@ -1,5 +1,5 @@
 ---
-import type { ToolConfig } from "../config/tools";
+import type { ToolConfig } from "../tools";
 
 type Props = {
   tool: ToolConfig;
@@ -89,7 +89,7 @@ const { tool } = Astro.props;
   ))}
   <div class="form-actions">
     <button class="button button-primary" type="submit">作成する</button>
-    <button class="button button-secondary" type="reset">リセット</button>
+    <button class="button button-secondary" type="button" data-clear-form>クリア</button>
   </div>
   <p class="privacy-note">
     入力内容はブラウザ内で処理され、外部送信や保存は行いません。
@@ -97,7 +97,7 @@ const { tool } = Astro.props;
 </form>
 
 <script>
-  import { tools } from "../config/tools";
+  import { tools } from "../tools";
   import { buildToolOutput } from "../lib/templateEngine";
   import { track } from "../lib/tracking";
 
@@ -169,6 +169,18 @@ const { tool } = Astro.props;
         fillExample(form, values);
         renderResult(form);
       });
+    });
+
+    form.querySelector<HTMLButtonElement>("[data-clear-form]")?.addEventListener("click", () => {
+      form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>("input, textarea, select").forEach((input) => {
+        if (input instanceof HTMLInputElement && input.type === "checkbox") {
+          input.checked = false;
+          return;
+        }
+
+        input.value = "";
+      });
+      renderResult(form);
     });
 
     renderResult(form);

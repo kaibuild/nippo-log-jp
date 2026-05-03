@@ -1,28 +1,57 @@
 ---
-import type { ToolConfig } from "../config/tools";
+import type { ToolConfig } from "../tools";
 import Layout from "./Layout.astro";
 import CTA from "./CTA.astro";
 import FAQ from "./FAQ.astro";
 import RelatedTools from "./RelatedTools.astro";
 import ToolForm from "./ToolForm.astro";
 import ToolResult from "./ToolResult.astro";
+import { site } from "../config/site";
 
 type Props = {
   tool: ToolConfig;
 };
 
 const { tool } = Astro.props;
+const pageUrl = new URL(`/tools/${tool.slug}`, site.productionUrl).toString();
+const faqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: tool.faq.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer
+    }
+  }))
+};
+const appJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  name: tool.title,
+  applicationCategory: "BusinessApplication",
+  operatingSystem: "Web",
+  url: pageUrl,
+  description: tool.metaDescription,
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "JPY"
+  }
+};
 ---
 
 <Layout
   title={tool.title}
-  description={`${tool.description} 入力内容はブラウザ内で処理され、外部送信しません。`}
+  description={tool.metaDescription}
   canonicalPath={`/tools/${tool.slug}`}
+  jsonLd={[faqJsonLd, appJsonLd]}
 >
   <section class="tool-hero">
     <div class="hero-inner">
       <p class="eyebrow">{tool.primaryKeyword}</p>
-      <h1>{tool.title}</h1>
+      <h1>{tool.h1}</h1>
       <p class="lead">{tool.description}</p>
       <div class="hero-actions">
         <a class="button button-primary" href="#tool">フォームへ進む</a>
@@ -43,7 +72,23 @@ const { tool } = Astro.props;
     </p>
   </section>
 
+  <section class="section seo-section" aria-labelledby="seo-title">
+    <div class="section-heading">
+      <p class="eyebrow">Guide</p>
+      <h2 id="seo-title">{tool.shortTitle}の使い方</h2>
+      <p>{tool.targetKeywords.join(" / ")}</p>
+    </div>
+    <div class="seo-grid">
+      {tool.seoBody.map((block) => (
+        <article>
+          <h3>{block.heading}</h3>
+          <p>{block.body}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
   <FAQ items={tool.faq} />
   <RelatedTools slugs={tool.relatedSlugs} />
-  <CTA />
+  <CTA body={tool.cta} />
 </Layout>

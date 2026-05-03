@@ -1,14 +1,17 @@
 ---
 import { site } from "../config/site";
+import Header from "./Header.astro";
+import Footer from "./Footer.astro";
 import "../styles/global.css";
 
 type Props = {
   title?: string;
   description?: string;
   canonicalPath?: string;
+  jsonLd?: unknown[];
 };
 
-const { title, description = site.description, canonicalPath = "/" } = Astro.props;
+const { title, description = site.description, canonicalPath = "/", jsonLd = [] } = Astro.props;
 const pageTitle = title ? `${title} | ${site.name}` : `${site.name} | 作業日報の無料ツール`;
 const canonicalUrl = new URL(canonicalPath, site.productionUrl).toString();
 ---
@@ -23,36 +26,20 @@ const canonicalUrl = new URL(canonicalPath, site.productionUrl).toString();
     <meta name="theme-color" content={site.themeColor} />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="icon" type="image/png" href={site.faviconPath} />
+    <link rel="apple-touch-icon" href={site.faviconPath} />
     <meta property="og:title" content={pageTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:url" content={canonicalUrl} />
+    {jsonLd.map((item) => (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(item)} />
+    ))}
   </head>
   <body>
-    <header class="site-header">
-      <a class="brand" href="/" aria-label="日報ログ ホーム">
-        <span class="brand-icon" aria-hidden="true">✓</span>
-        <span class="brand-text">{site.name}</span>
-      </a>
-      <nav class="site-nav" aria-label="主要ナビゲーション">
-        <a href="/#tools">無料ツール</a>
-        <a href="/waitlist">先行案内</a>
-        <a href="/terms">利用規約</a>
-      </nav>
-    </header>
+    <Header />
     <main>
       <slot />
     </main>
-    <footer class="site-footer">
-      <div>
-        <strong>{site.name}</strong>
-        <p>作業日報のフォーマット作成と記録整理を支援する無料ツール集です。</p>
-      </div>
-      <nav aria-label="フッターナビゲーション">
-        <a href="/privacy">プライバシーポリシー</a>
-        <a href="/terms">利用規約</a>
-        <a href="/sitemap.xml">sitemap.xml</a>
-      </nav>
-    </footer>
+    <Footer />
   </body>
 </html>

@@ -25,17 +25,63 @@ export type ToolConfig = {
   id: string;
   slug: string;
   title: string;
+  h1: string;
   shortTitle: string;
   description: string;
+  metaDescription: string;
   primaryKeyword: string;
+  targetKeywords: string[];
   resultLabel: string;
   fields: ToolField[];
+  options: FieldOption[];
+  templates: string[];
   examples: ToolExample[];
   faq: Array<{ question: string; answer: string }>;
   relatedSlugs: string[];
+  cta: string;
+  seoBody: Array<{ heading: string; body: string }>;
+  structuredData: {
+    faqPage: boolean;
+    webApplication: boolean;
+  };
 };
 
-export const tools: ToolConfig[] = [
+type RawToolConfig = Omit<
+  ToolConfig,
+  | "h1"
+  | "metaDescription"
+  | "targetKeywords"
+  | "options"
+  | "templates"
+  | "cta"
+  | "seoBody"
+  | "structuredData"
+>;
+
+const ctaText = "無料テンプレートで始めて、チーム共有は日報ログへ。";
+
+function buildOptions(fields: ToolField[]): FieldOption[] {
+  return fields.flatMap((field) => field.options ?? []);
+}
+
+function buildSeoBody(tool: RawToolConfig): ToolConfig["seoBody"] {
+  return [
+    {
+      heading: `${tool.shortTitle}で整理できること`,
+      body: `${tool.description} フォーマットがばらつきやすい現場作業、小規模建設、設備保守、清掃、制作・運用チームで、作業内容の共有を軽くするためのたたき台として使えます。`
+    },
+    {
+      heading: "入力内容の取り扱い",
+      body: "入力内容はブラウザ内でテンプレートに差し込まれ、外部送信やサーバー保存、localStorage保存は行いません。結果はコピーして、Excelや社内ドキュメントに貼り付けて調整できます。"
+    },
+    {
+      heading: "利用時の注意",
+      body: "本ツールはチーム内の記録整理を支援する一般的な無料ツールです。勤怠、労務、法務、税務、医療、法定帳票の個別判断や完全な対応を保証するものではありません。"
+    }
+  ];
+}
+
+const rawTools: RawToolConfig[] = [
   {
     id: "workDailyReportTemplate",
     slug: "work-daily-report-template",
@@ -539,6 +585,21 @@ export const tools: ToolConfig[] = [
     ]
   }
 ];
+
+export const tools: ToolConfig[] = rawTools.map((tool) => ({
+  ...tool,
+  h1: tool.title,
+  metaDescription: `${tool.description} 入力内容はブラウザ内で処理され、外部送信や保存は行いません。`,
+  targetKeywords: [tool.primaryKeyword, tool.title, tool.shortTitle, "作業日報 無料ツール"],
+  options: buildOptions(tool.fields),
+  templates: [tool.resultLabel, `${tool.shortTitle}の入力フォーム`, `${tool.shortTitle}のコピー用出力`],
+  cta: ctaText,
+  seoBody: buildSeoBody(tool),
+  structuredData: {
+    faqPage: true,
+    webApplication: true
+  }
+}));
 
 export const toolBySlug = new Map(tools.map((tool) => [tool.slug, tool]));
 
