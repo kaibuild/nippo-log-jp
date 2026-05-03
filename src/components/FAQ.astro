@@ -1,0 +1,22 @@
+---
+type Props = {
+  items: Array<{ question: string; answer: string }>;
+};
+
+const { items } = Astro.props;
+---
+
+<section class="section" aria-labelledby="faq-title">
+  <div class="section-heading">
+    <p class="eyebrow">FAQ</p>
+    <h2 id="faq-title">よくある質問</h2>
+  </div>
+  <div class="faq-list">
+    {items.map((item) => (
+      <details>
+        <summary>{item.question}</summary>
+        <p>{item.answer}</p>
+      </details>
+    ))}
+  </div>
+</section>

@@ -1,0 +1,21 @@
+{
+  "name": "nippo-log-jp",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^6.2.1",
+    "typescript": "^6.0.3"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9"
+  },
+  "overrides": {
+    "yaml": "^2.8.4"
+  }
+}

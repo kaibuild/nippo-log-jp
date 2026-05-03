@@ -1,0 +1,194 @@
+---
+import type { ToolConfig } from "../config/tools";
+
+type Props = {
+  tool: ToolConfig;
+};
+
+const { tool } = Astro.props;
+---
+
+<form class="tool-form" data-tool-form data-tool-slug={tool.slug}>
+  <div class="form-header">
+    <p class="eyebrow">Input</p>
+    <h2>入力内容</h2>
+  </div>
+  <div class="example-row" aria-label="入力例">
+    {tool.examples.map((example) => (
+      <button
+        class="button button-secondary small"
+        type="button"
+        data-example-values={JSON.stringify(example.values)}
+      >
+        {example.label}
+      </button>
+    ))}
+  </div>
+  {tool.fields.map((field) => (
+    <div class="field-group">
+      <label class="field-label" for={field.type === "checkbox-group" ? undefined : field.id}>
+        {field.label}
+      </label>
+      {field.type === "textarea" && (
+        <textarea
+          id={field.id}
+          name={field.id}
+          rows={field.rows ?? 4}
+          placeholder={field.placeholder}
+        >{typeof field.defaultValue === "string" ? field.defaultValue : ""}</textarea>
+      )}
+      {field.type === "text" && (
+        <input
+          id={field.id}
+          name={field.id}
+          type="text"
+          placeholder={field.placeholder}
+          value={typeof field.defaultValue === "string" ? field.defaultValue : ""}
+        />
+      )}
+      {field.type === "number" && (
+        <input
+          id={field.id}
+          name={field.id}
+          type="number"
+          min={field.min}
+          max={field.max}
+          placeholder={field.placeholder}
+          value={typeof field.defaultValue === "string" ? field.defaultValue : ""}
+        />
+      )}
+      {field.type === "select" && (
+        <select id={field.id} name={field.id}>
+          {field.options?.map((option) => (
+            <option
+              value={option.value}
+              selected={typeof field.defaultValue === "string" && field.defaultValue === option.value}
+            >
+              {option.label}
+            </option>
+          ))}
+        </select>
+      )}
+      {field.type === "checkbox-group" && (
+        <div class="checkbox-grid" role="group" aria-label={field.label}>
+          {field.options?.map((option) => (
+            <label class="checkbox-option">
+              <input
+                type="checkbox"
+                name={field.id}
+                value={option.value}
+                checked={Array.isArray(field.defaultValue) && field.defaultValue.includes(option.value)}
+              />
+              <span>{option.label}</span>
+            </label>
+          ))}
+        </div>
+      )}
+      {field.help && <p class="field-help">{field.help}</p>}
+    </div>
+  ))}
+  <div class="form-actions">
+    <button class="button button-primary" type="submit">作成する</button>
+    <button class="button button-secondary" type="reset">リセット</button>
+  </div>
+  <p class="privacy-note">
+    入力内容はブラウザ内で処理され、外部送信や保存は行いません。
+  </p>
+</form>
+
+<script>
+  import { tools } from "../config/tools";
+  import { buildToolOutput } from "../lib/templateEngine";
+  import { track } from "../lib/tracking";
+
+  function collectFormData(form: HTMLFormElement, toolId: string): Record<string, string | string[]> {
+    const tool = tools.find((item) => item.slug === toolId);
+    const data: Record<string, string | string[]> = {};
+
+    if (!tool) {
+      return data;
+    }
+
+    for (const field of tool.fields) {
+      if (field.type === "checkbox-group") {
+        data[field.id] = Array.from(
+          form.querySelectorAll<HTMLInputElement>(`input[name="${field.id}"]:checked`)
+        ).map((input) => input.value);
+        continue;
+      }
+
+      const input = form.elements.namedItem(field.id) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+      data[field.id] = input?.value ?? "";
+    }
+
+    return data;
+  }
+
+  function fillExample(form: HTMLFormElement, values: Record<string, string | string[]>): void {
+    for (const [key, rawValue] of Object.entries(values)) {
+      if (Array.isArray(rawValue)) {
+        form.querySelectorAll<HTMLInputElement>(`input[name="${key}"]`).forEach((input) => {
+          input.checked = rawValue.includes(input.value);
+        });
+        continue;
+      }
+
+      const input = form.elements.namedItem(key) as HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement | null;
+      if (input) {
+        input.value = rawValue;
+      }
+    }
+  }
+
+  function renderResult(form: HTMLFormElement): void {
+    const slug = form.dataset.toolSlug || "";
+    const tool = tools.find((item) => item.slug === slug);
+    const output = document.querySelector<HTMLElement>("#tool-output");
+
+    if (!tool || !output) {
+      return;
+    }
+
+    output.textContent = buildToolOutput(tool.id, collectFormData(form, slug));
+    track("tool_result_created", { tool: slug });
+  }
+
+  document.querySelectorAll<HTMLFormElement>("[data-tool-form]").forEach((form) => {
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+      renderResult(form);
+    });
+
+    form.addEventListener("reset", () => {
+      window.setTimeout(() => renderResult(form), 0);
+    });
+
+    form.querySelectorAll<HTMLButtonElement>("[data-example-values]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const values = JSON.parse(button.dataset.exampleValues || "{}") as Record<string, string | string[]>;
+        fillExample(form, values);
+        renderResult(form);
+      });
+    });
+
+    renderResult(form);
+  });
+
+  document.querySelectorAll<HTMLButtonElement>("[data-copy-result]").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const output = document.querySelector<HTMLElement>("#tool-output");
+      const text = output?.textContent || "";
+
+      if (!text || !navigator.clipboard) {
+        return;
+      }
+
+      await navigator.clipboard.writeText(text);
+      const original = button.textContent;
+      button.textContent = "コピー済み";
+      window.setTimeout(() => {
+        button.textContent = original;
+      }, 1400);
+    });
+  });
+</script>

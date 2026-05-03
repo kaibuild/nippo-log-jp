@@ -1,0 +1,28 @@
+---
+import { tools } from "../config/tools";
+
+type Props = {
+  slugs: string[];
+};
+
+const { slugs } = Astro.props;
+const relatedTools = slugs
+  .map((slug) => tools.find((tool) => tool.slug === slug))
+  .filter(Boolean);
+---
+
+<section class="section" aria-labelledby="related-title">
+  <div class="section-heading">
+    <p class="eyebrow">Related</p>
+    <h2 id="related-title">関連する無料ツール</h2>
+  </div>
+  <div class="tool-card-grid compact">
+    {relatedTools.map((tool) => (
+      <a class="tool-card" href={`/tools/${tool!.slug}`}>
+        <span>{tool!.shortTitle}</span>
+        <strong>{tool!.title}</strong>
+        <p>{tool!.description}</p>
+      </a>
+    ))}
+  </div>
+</section>

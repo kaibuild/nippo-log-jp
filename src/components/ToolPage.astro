@@ -1,0 +1,49 @@
+---
+import type { ToolConfig } from "../config/tools";
+import Layout from "./Layout.astro";
+import CTA from "./CTA.astro";
+import FAQ from "./FAQ.astro";
+import RelatedTools from "./RelatedTools.astro";
+import ToolForm from "./ToolForm.astro";
+import ToolResult from "./ToolResult.astro";
+
+type Props = {
+  tool: ToolConfig;
+};
+
+const { tool } = Astro.props;
+---
+
+<Layout
+  title={tool.title}
+  description={`${tool.description} 入力内容はブラウザ内で処理され、外部送信しません。`}
+  canonicalPath={`/tools/${tool.slug}`}
+>
+  <section class="tool-hero">
+    <div class="hero-inner">
+      <p class="eyebrow">{tool.primaryKeyword}</p>
+      <h1>{tool.title}</h1>
+      <p class="lead">{tool.description}</p>
+      <div class="hero-actions">
+        <a class="button button-primary" href="#tool">フォームへ進む</a>
+        <a class="button button-secondary" href="/#tools">他のツールを見る</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="tool" class="tool-workspace" aria-label={`${tool.title}の入力フォームと結果`}>
+    <ToolForm tool={tool} />
+    <ToolResult label={tool.resultLabel} />
+  </section>
+
+  <section class="notice-band" aria-label="免責事項">
+    <strong>免責事項</strong>
+    <p>
+      本ツールは作業内容の共有と記録整理を支援する一般的な無料ツールです。法務、税務、医療、労務上の個別判断や完全な対応を保証するものではありません。
+    </p>
+  </section>
+
+  <FAQ items={tool.faq} />
+  <RelatedTools slugs={tool.relatedSlugs} />
+  <CTA />
+</Layout>

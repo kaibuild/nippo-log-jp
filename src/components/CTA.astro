@@ -1,0 +1,21 @@
+---
+import { site } from "../config/site";
+
+type Props = {
+  title?: string;
+  body?: string;
+};
+
+const {
+  title = "日報共有を、テンプレート作成の次へ。",
+  body = site.cta
+} = Astro.props;
+---
+
+<section class="cta-band" aria-labelledby="cta-title">
+  <div>
+    <h2 id="cta-title">{title}</h2>
+    <p>{body}</p>
+  </div>
+  <a class="button button-accent" href="/waitlist">先行案内を見る</a>
+</section>

@@ -1,0 +1,67 @@
+---
+import Layout from "../components/Layout.astro";
+import CTA from "../components/CTA.astro";
+import { tools } from "../config/tools";
+import { site } from "../config/site";
+---
+
+<Layout canonicalPath="/" title="作業日報の無料ツール">
+  <section class="home-hero">
+    <div class="hero-inner home-grid">
+      <div>
+        <p class="eyebrow">作業日報の無料ツール</p>
+        <h1>日報テンプレート、例文、月次フォーマットをブラウザ内で作成。</h1>
+        <p class="lead">
+          現場作業、小規模建設、設備保守、清掃、制作・運用チーム向けに、ばらつきやすい日報フォーマットを整理します。
+        </p>
+        <div class="hero-actions">
+          <a class="button button-primary" href="/tools/work-daily-report-template">1本目のツールを使う</a>
+          <a class="button button-secondary" href="#tools">6本のツールを見る</a>
+        </div>
+      </div>
+      <div class="quick-panel" aria-label="日報テンプレートの構成例">
+        <div class="paper-preview">
+          <div class="paper-line wide"></div>
+          <div class="paper-row"><span>✓</span><div></div></div>
+          <div class="paper-row"><span>✓</span><div></div></div>
+          <div class="paper-row muted"><span>□</span><div></div></div>
+          <div class="paper-footer">作業内容 / 進捗 / 申し送り</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="tools" class="section">
+    <div class="section-heading">
+      <p class="eyebrow">Tools</p>
+      <h2>無料ツール6本</h2>
+      <p>入力内容は外部送信せず、ブラウザ内だけでテンプレートや例文を作成します。</p>
+    </div>
+    <div class="tool-card-grid">
+      {tools.map((tool, index) => (
+        <a class="tool-card" href={`/tools/${tool.slug}`}>
+          <span>Tool {index + 1}</span>
+          <strong>{tool.title}</strong>
+          <p>{tool.description}</p>
+        </a>
+      ))}
+    </div>
+  </section>
+
+  <section class="section two-column">
+    <div>
+      <p class="eyebrow">Use case</p>
+      <h2>Excel日報の前段づくりに使えます。</h2>
+    </div>
+    <div class="text-block">
+      <p>
+        日報ログは、作業日報の共有、承認、検索、月次集計を軽くするSaaSの仮説から生まれた無料ツール集です。まずはテンプレート作成、項目整理、例文作成で日報の書き始めを支援します。
+      </p>
+      <p>
+        本サイトの無料ツールは、勤怠管理、労務リスク防止、建設業法や法定帳票への対応を訴求しません。作業内容の共有とチーム内の記録整理を目的とした一般的なツールです。
+      </p>
+    </div>
+  </section>
+
+  <CTA body={site.cta} />
+</Layout>

@@ -1,0 +1,18 @@
+---
+type Props = {
+  label: string;
+};
+
+const { label } = Astro.props;
+---
+
+<section class="result-panel" aria-labelledby="result-title">
+  <div class="result-header">
+    <div>
+      <p class="eyebrow">Result</p>
+      <h2 id="result-title">{label}</h2>
+    </div>
+    <button class="button button-secondary" type="button" data-copy-result>コピー</button>
+  </div>
+  <pre id="tool-output" class="tool-output" aria-live="polite">左のフォームに入力して「作成する」を押すと、ここに結果が表示されます。</pre>
+</section>

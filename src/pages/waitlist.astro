@@ -1,0 +1,57 @@
+---
+import Layout from "../components/Layout.astro";
+import { site } from "../config/site";
+---
+
+<Layout
+  title="日報ログの先行案内を受け取る"
+  description="作業日報の共有、承認、検索、月次集計を軽くするSaaSの先行案内ページです。"
+  canonicalPath="/waitlist"
+>
+  <section class="page-hero">
+    <div class="hero-inner narrow">
+      <p class="eyebrow">Waitlist</p>
+      <h1>日報ログの先行案内を受け取る</h1>
+      <p class="lead">
+        作業日報の共有、承認、検索、月次集計を軽くするSaaSの案内を受け取れます。
+      </p>
+    </div>
+  </section>
+
+  <section class="section waitlist-layout">
+    <div class="waitlist-panel">
+      <h2>受付予定の項目</h2>
+      <ul class="check-list">
+        <li>メールアドレス</li>
+        <li>業種</li>
+        <li>チーム人数</li>
+        <li>現在の管理方法</li>
+      </ul>
+      <p>
+        興味がある用途として、日報共有、提出状況確認、承認、月次集計、写真付き記録を選べるフォームを準備予定です。
+      </p>
+    </div>
+    <div class="waitlist-panel accent-panel">
+      <h2>フォーム準備中</h2>
+      <p>
+        Tally共有リンクはまだ設定されていないため、現在は仮CTAとして掲載しています。公開後はこのページから先行案内に登録できます。
+      </p>
+      <a class="button button-primary" href="/tools/work-daily-report-template">無料テンプレートを使う</a>
+    </div>
+  </section>
+
+  <section class="notice-band">
+    <strong>データの取り扱い</strong>
+    <p>
+      無料ツールの入力内容はブラウザ内で処理し、サーバー保存しません。waitlistフォームを設置した場合のみ、送信されたメールアドレス等を案内目的で保存します。
+    </p>
+  </section>
+
+  <section class="cta-band">
+    <div>
+      <h2>{site.name}が目指すこと</h2>
+      <p>{site.cta}</p>
+    </div>
+    <a class="button button-secondary" href="/#tools">無料ツール一覧</a>
+  </section>
+</Layout>
