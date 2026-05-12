@@ -1,8 +1,8 @@
 import { site } from "../config/site";
 import { tools } from "../tools";
 
-const staticPaths = ["/", "/waitlist", "/terms", "/privacy"];
-const toolPaths = tools.map((tool) => `/tools/${tool.slug}`);
+const staticPaths = ["/", "/waitlist/", "/terms/", "/privacy/"];
+const toolPaths = tools.map((tool) => `/tools/${tool.slug}/`);
 
 export function GET() {
   const urls = [...staticPaths.slice(0, 1), ...toolPaths, ...staticPaths.slice(1)]

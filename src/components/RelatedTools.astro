@@ -18,7 +18,7 @@ const relatedTools = slugs
   </div>
   <div class="tool-card-grid compact">
     {relatedTools.map((tool) => (
-      <a class="tool-card" href={`/tools/${tool!.slug}`}>
+      <a class="tool-card" href={`/tools/${tool!.slug}/`}>
         <span>{tool!.shortTitle}</span>
         <strong>{tool!.title}</strong>
         <p>{tool!.description}</p>
