@@ -13,7 +13,7 @@ type Props = {
 };
 
 const { tool } = Astro.props;
-const pageUrl = new URL(`/tools/${tool.slug}/`, site.productionUrl).toString();
+const pageUrl = new URL(`/tools/${tool.slug}`, site.productionUrl).toString();
 const faqJsonLd = {
   "@context": "https://schema.org",
   "@type": "FAQPage",
@@ -45,7 +45,7 @@ const appJsonLd = {
 <Layout
   title={tool.title}
   description={tool.metaDescription}
-  canonicalPath={`/tools/${tool.slug}/`}
+  canonicalPath={`/tools/${tool.slug}`}
   jsonLd={[faqJsonLd, appJsonLd]}
 >
   <section class="tool-hero">

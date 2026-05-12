@@ -15,7 +15,7 @@ import { site } from "../config/site";
           現場作業、小規模建設、設備保守、清掃、制作・運用チーム向けに、ばらつきやすい日報フォーマットを整理します。
         </p>
         <div class="hero-actions">
-          <a class="button button-primary" href="/tools/work-daily-report-template/">1本目のツールを使う</a>
+          <a class="button button-primary" href="/tools/work-daily-report-template">1本目のツールを使う</a>
           <a class="button button-secondary" href="#tools">6本のツールを見る</a>
         </div>
       </div>
@@ -39,7 +39,7 @@ import { site } from "../config/site";
     </div>
     <div class="tool-card-grid">
       {tools.map((tool, index) => (
-        <a class="tool-card" href={`/tools/${tool.slug}/`}>
+        <a class="tool-card" href={`/tools/${tool.slug}`}>
           <span>Tool {index + 1}</span>
           <strong>{tool.title}</strong>
           <p>{tool.description}</p>
