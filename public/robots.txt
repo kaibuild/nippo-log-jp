@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://nippo-log-jp.pages.dev/sitemap.xml
